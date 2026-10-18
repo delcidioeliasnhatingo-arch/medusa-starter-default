@@ -12,6 +12,7 @@ module.exports = defineConfig({
     path: process.env.VERCEL === "1" ? "/" : "/app",
     backendUrl:
       process.env.MEDUSA_BACKEND_URL ||
+      process.env.RENDER_EXTERNAL_URL ||
       "https://aveart-medusa-backend-production.up.railway.app",
   },
   projectConfig: {
