@@ -25,8 +25,8 @@ module.exports = defineConfig({
       // Allow the separate Vercel Admin domain while preserving existing configured origins.
       adminCors: withVercelAdminOrigin(process.env.ADMIN_CORS),
       authCors: withVercelAdminOrigin(process.env.AUTH_CORS),
-      jwtSecret: process.env.JWT_SECRET || "supersecret",
-      cookieSecret: process.env.COOKIE_SECRET || "supersecret",
+      jwtSecret: process.env.JWT_SECRET!,
+      cookieSecret: process.env.COOKIE_SECRET!,
     }
   }
 })
