@@ -1,0 +1,5 @@
+{
+  "installCommand": "yarn install",
+  "buildCommand": "yarn medusa build --admin-only",
+  "outputDirectory": ".medusa/admin"
+}
