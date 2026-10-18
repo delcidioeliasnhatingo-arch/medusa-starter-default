@@ -12,6 +12,7 @@
     "headless",
     "medusa"
   ],
+  "packageManager": "yarn@4.12.0",
   "scripts": {
     "build": "medusa build",
     "seed": "medusa exec ./src/scripts/seed.ts",
