@@ -7,7 +7,7 @@ services:
     runtime: node
     plan: free
     region: frankfurt
-    buildCommand: yarn install --frozen-lockfile && yarn build
+    buildCommand: corepack enable && yarn install --immutable && yarn build
     startCommand: yarn medusa db:migrate && yarn start
     healthCheckPath: /health
     autoDeploy: true
