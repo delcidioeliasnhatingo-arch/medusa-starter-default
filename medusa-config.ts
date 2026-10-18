@@ -16,6 +16,8 @@ module.exports = defineConfig({
   },
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
+    redisUrl: process.env.REDIS_URL,
+    workerMode: (process.env.MEDUSA_WORKER_MODE || "shared") as "shared" | "worker" | "server",
     http: {
       storeCors: process.env.STORE_CORS!,
       // Allow the separate Vercel Admin domain while preserving existing configured origins.
