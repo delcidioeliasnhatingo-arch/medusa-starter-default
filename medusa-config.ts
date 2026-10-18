@@ -8,9 +8,8 @@ const withVercelAdminOrigin = (value: string | undefined) =>
 
 module.exports = defineConfig({
   admin: {
-    // The Admin UI is built and hosted separately on Vercel; do not serve it from the API container.
-    disable: true,
-    // Vercel hosts the static Admin. Configure MEDUSA_BACKEND_URL only when a separate API exists.
+    // Build the static Admin UI on Vercel; keep it disabled in the Render API service.
+    disable: process.env.VERCEL !== "1",
     path: process.env.VERCEL === "1" ? "/" : "/app",
     backendUrl:
       process.env.MEDUSA_BACKEND_URL ||
@@ -22,7 +21,6 @@ module.exports = defineConfig({
     workerMode: (process.env.MEDUSA_WORKER_MODE || "shared") as "shared" | "worker" | "server",
     http: {
       storeCors: process.env.STORE_CORS!,
-      // Allow the separate Vercel Admin domain while preserving existing configured origins.
       adminCors: withVercelAdminOrigin(process.env.ADMIN_CORS),
       authCors: withVercelAdminOrigin(process.env.AUTH_CORS),
       jwtSecret: process.env.JWT_SECRET!,
