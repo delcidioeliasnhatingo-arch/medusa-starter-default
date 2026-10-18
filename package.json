@@ -4,12 +4,19 @@
   "description": "A starter for Medusa projects.",
   "author": "Medusa (https://medusajs.com)",
   "license": "MIT",
-  "keywords": ["sqlite", "postgres", "typescript", "medusa", "ecommerce"],
+  "keywords": [
+    "sqlite",
+    "postgres",
+    "typescript",
+    "ecommerce",
+    "headless",
+    "medusa"
+  ],
   "packageManager": "yarn@4.12.0",
   "scripts": {
     "build": "medusa build",
     "seed": "medusa exec ./src/scripts/seed.ts",
-    "start": "if [ \"$CREATE_ADMIN_INVITE\" = \"true\" ]; then medusa user --email delcidioeliasnhatingo@gmail.com --invite || exit $?; fi; medusa start",
+    "start": "medusa start",
     "dev": "medusa develop",
     "test:integration:http": "TEST_TYPE=integration:http NODE_OPTIONS=--experimental-vm-modules jest --silent=false --runInBand --forceExit",
     "test:integration:modules": "TEST_TYPE=integration:modules NODE_OPTIONS=--experimental-vm-modules jest --silent=false --runInBand --forceExit",
@@ -35,7 +42,10 @@
     "react-dom": "^18.3.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.6.2",
+    "vite": "^5.4.14",
     "yalc": "^1.0.0-pre.53"
   },
-  "engines": {"node": ">=20"}
+  "engines": {
+    "node": ">=20"
+  }
 }
