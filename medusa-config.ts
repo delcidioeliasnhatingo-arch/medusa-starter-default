@@ -8,12 +8,11 @@ const withVercelAdminOrigin = (value: string | undefined) =>
 
 module.exports = defineConfig({
   admin: {
-    // Vercel hosts the static Admin; the API can run on Render (or Railway as a fallback).
+    // Vercel hosts the static Admin. Configure MEDUSA_BACKEND_URL only when a separate API exists.
     path: process.env.VERCEL === "1" ? "/" : "/app",
     backendUrl:
       process.env.MEDUSA_BACKEND_URL ||
-      process.env.RENDER_EXTERNAL_URL ||
-      "https://aveart-medusa-backend-production.up.railway.app",
+      process.env.RENDER_EXTERNAL_URL,
   },
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
