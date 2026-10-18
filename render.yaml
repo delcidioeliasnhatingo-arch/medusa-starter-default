@@ -1,25 +1,25 @@
 # Render Blueprint for the AVEART Medusa API.
-# Free resources are for testing only: Render Free Postgres expires after 30 days,
-# and Free Key Value does not persist data. Upgrade before accepting real orders.
+# Uses Neon PostgreSQL (external DATABASE_URL) to avoid Render's expiring free Postgres.
+# Render Free web services may sleep when idle; the free Redis instance is cache-only.
 services:
   - type: web
     name: aveart-medusa-api
     runtime: node
     plan: free
     region: frankfurt
-    buildCommand: corepack enable && yarn install --immutable && yarn build
+    buildCommand: yarn install --frozen-lockfile && yarn build
     startCommand: yarn medusa db:migrate && yarn start
     healthCheckPath: /health
     autoDeploy: true
     envVars:
       - key: NODE_ENV
         value: production
+      - key: NODE_VERSION
+        value: 20.19.0
       - key: PORT
         value: "10000"
       - key: DATABASE_URL
-        fromDatabase:
-          name: aveart-medusa-postgres
-          property: connectionString
+        sync: false
       - key: REDIS_URL
         fromService:
           name: aveart-medusa-redis
@@ -32,26 +32,14 @@ services:
       - key: MEDUSA_WORKER_MODE
         value: shared
       - key: STORE_CORS
-        value: http://localhost:8000
+        sync: false
       - key: ADMIN_CORS
         value: https://medusa-starter-default-aveart.vercel.app,https://medusa-starter-default-beta.vercel.app
       - key: AUTH_CORS
         value: https://medusa-starter-default-aveart.vercel.app,https://medusa-starter-default-beta.vercel.app
-      - key: MEDUSA_BACKEND_URL
-        fromService:
-          name: aveart-medusa-api
-          type: web
-          envVarKey: RENDER_EXTERNAL_URL
 
   - type: keyvalue
     name: aveart-medusa-redis
     plan: free
     region: frankfurt
     ipAllowList: []
-
-databases:
-  - name: aveart-medusa-postgres
-    plan: free
-    region: frankfurt
-    databaseName: aveart_medusa
-    user: aveart_medusa
