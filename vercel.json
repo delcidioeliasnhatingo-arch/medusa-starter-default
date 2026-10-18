@@ -1,5 +1,11 @@
 {
   "installCommand": "yarn install",
   "buildCommand": "yarn medusa build --admin-only",
-  "outputDirectory": ".medusa/admin"
+  "outputDirectory": ".medusa/admin",
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://aveart-medusa-api.onrender.com/:path*"
+    }
+  ]
 }
