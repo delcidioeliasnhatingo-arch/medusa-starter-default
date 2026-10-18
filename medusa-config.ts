@@ -8,7 +8,7 @@ const withVercelAdminOrigin = (value: string | undefined) =>
 
 module.exports = defineConfig({
   admin: {
-    // The Vercel deployment hosts only the static Admin; the API stays on the existing Railway service.
+    // Vercel hosts the static Admin; the API can run on Render (or Railway as a fallback).
     path: process.env.VERCEL === "1" ? "/" : "/app",
     backendUrl:
       process.env.MEDUSA_BACKEND_URL ||
