@@ -8,6 +8,8 @@ const withVercelAdminOrigin = (value: string | undefined) =>
 
 module.exports = defineConfig({
   admin: {
+    // The Admin UI is built and hosted separately on Vercel; do not serve it from the API container.
+    disable: true,
     // Vercel hosts the static Admin. Configure MEDUSA_BACKEND_URL only when a separate API exists.
     path: process.env.VERCEL === "1" ? "/" : "/app",
     backendUrl:
