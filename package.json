@@ -16,7 +16,7 @@
   "scripts": {
     "build": "medusa build && cd .medusa/server && yarn install",
     "seed": "medusa exec ./src/scripts/seed.ts",
-    "start": "cd .medusa/server && yarn medusa db:migrate && if [ -n \"$ADMIN_EMAIL\" ] && [ -n \"$ADMIN_PASSWORD\" ]; then yarn medusa user --email \"$ADMIN_EMAIL\" --password \"$ADMIN_PASSWORD\" || echo \"Admin bootstrap skipped; account may already exist.\"; fi && yarn medusa start --host 0.0.0.0 --port ${PORT:-10000}",
+    "start": "cd .medusa/server && yarn medusa db:migrate && yarn medusa start --host 0.0.0.0 --port ${PORT:-10000}",
     "dev": "medusa develop",
     "test:integration:http": "TEST_TYPE=integration:http NODE_OPTIONS=--experimental-vm-modules jest --silent=false --runInBand --forceExit",
     "test:integration:modules": "TEST_TYPE=integration:modules NODE_OPTIONS=--experimental-vm-modules jest --silent=false --runInBand --forceExit",
