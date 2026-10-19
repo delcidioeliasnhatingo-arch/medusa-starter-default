@@ -14,7 +14,7 @@
   ],
   "packageManager": "yarn@4.12.0",
   "scripts": {
-    "build": "medusa build && cd .medusa/server && yarn install --production",
+    "build": "medusa build && cd .medusa/server && yarn install",
     "seed": "medusa exec ./src/scripts/seed.ts",
     "start": "cd .medusa/server && yarn medusa db:migrate && if [ -n \"$ADMIN_EMAIL\" ] && [ -n \"$ADMIN_PASSWORD\" ]; then yarn medusa user --email \"$ADMIN_EMAIL\" --password \"$ADMIN_PASSWORD\" || echo \"Admin bootstrap skipped; account may already exist.\"; fi && yarn medusa exec ./src/scripts/seed-aveart.js && yarn medusa start --host 0.0.0.0 --port ${PORT:-10000}",
     "dev": "medusa develop",
