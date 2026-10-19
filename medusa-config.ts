@@ -1,4 +1,4 @@
-import { loadEnv, defineConfig } from '@medusajs/framework/utils'
+import { loadEnv, defineConfig, Modules } from '@medusajs/framework/utils'
 
 loadEnv(process.env.NODE_ENV || 'development', process.cwd())
 
@@ -15,6 +15,29 @@ module.exports = defineConfig({
       process.env.MEDUSA_BACKEND_URL ||
       process.env.RENDER_EXTERNAL_URL,
   },
+  modules: [
+    {
+      resolve: "@medusajs/medusa/payment",
+      options: {
+        providers: [
+          {
+            resolve: "./src/modules/debitopay",
+            id: "debitopay",
+            options: {
+              apiKey: process.env.DEBITOPAY_API_KEY,
+              merchantId: process.env.DEBITOPAY_MERCHANT_ID,
+              walletCode: process.env.DEBITOPAY_WALLET_CODE,
+              apiBaseUrl: process.env.DEBITOPAY_API_BASE_URL,
+              currency: process.env.DEBITOPAY_CURRENCY || "ZAR",
+              paymentMethod: process.env.DEBITOPAY_PAYMENT_METHOD || "payfast",
+              returnUrl: process.env.DEBITOPAY_RETURN_URL,
+              webhookSecret: process.env.DEBITOPAY_WEBHOOK_SECRET,
+            },
+          },
+        ],
+      },
+    },
+  ],
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
     redisUrl: process.env.REDIS_URL?.trim() || undefined,
