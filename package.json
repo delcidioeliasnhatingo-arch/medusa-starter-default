@@ -16,7 +16,7 @@
   "scripts": {
     "build": "medusa build",
     "seed": "medusa exec ./src/scripts/seed.ts",
-    "start": "medusa exec ./src/scripts/seed-aveart.ts && medusa start --host 0.0.0.0 --port ${PORT:-9000}",
+    "start": "if [ -n \"$ADMIN_EMAIL\" ] && [ -n \"$ADMIN_PASSWORD\" ]; then medusa user --email \"$ADMIN_EMAIL\" --password \"$ADMIN_PASSWORD\" || echo \"Admin bootstrap skipped; account may already exist.\"; fi && medusa exec ./src/scripts/seed-aveart.ts && medusa start --host 0.0.0.0 --port ${PORT:-9000}",
     "dev": "medusa develop",
     "test:integration:http": "TEST_TYPE=integration:http NODE_OPTIONS=--experimental-vm-modules jest --silent=false --runInBand --forceExit",
     "test:integration:modules": "TEST_TYPE=integration:modules NODE_OPTIONS=--experimental-vm-modules jest --silent=false --runInBand --forceExit",
