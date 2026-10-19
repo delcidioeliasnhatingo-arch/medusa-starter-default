@@ -8,7 +8,7 @@ services:
     plan: free
     region: frankfurt
     buildCommand: corepack enable && yarn install --immutable && yarn build
-    startCommand: yarn medusa db:migrate && yarn start
+    startCommand: yarn start
     healthCheckPath: /health
     autoDeploy: true
     envVars:
