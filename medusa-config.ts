@@ -9,7 +9,7 @@ const withVercelAdminOrigin = (value: string | undefined) =>
 module.exports = defineConfig({
   admin: {
     // Build the static Admin UI on Vercel; keep it disabled in the Render API service.
-    disable: process.env.VERCEL !== "1",
+    disable: false,
     path: process.env.VERCEL === "1" ? "/" : "/app",
     backendUrl:
       process.env.MEDUSA_BACKEND_URL ||
