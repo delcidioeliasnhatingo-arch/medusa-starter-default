@@ -3,11 +3,31 @@
 ## Included in this change
 
 - Medusa store endpoint: `POST /store/aveart-shipping/quote`.
+- Public tariff endpoint: `GET /store/aveart-shipping/tariffs` returns AVEART Economy R120, Standard R180, Express R300 and a special-delivery quote-required tier.
 - Server-side call to Shiplogic / The Courier Guy rates API.
 - Validates collection and delivery addresses in South Africa and parcel weight/dimensions.
 - Returns normalized carrier services sorted by the quoted ZAR price.
 - Keeps the API token server-side and does not expose raw provider errors.
 - Quotes only: does not book shipments, create labels, charge customers, or change product prices.
+
+## AVEART customer-facing tariffs
+
+The initial storefront tariff table is:
+
+| Method | Customer price |
+|---|---:|
+| AVEART Economy | R120 |
+| AVEART Standard | R180 |
+| AVEART Express | R300 |
+| Remote, bulky or special delivery | From R300, confirm route before charging |
+
+These are initial commercial prices chosen by AVEART, not verified carrier prices or guaranteed delivery promises. The frontend checkout uses the same R120/R180/R300 tariffs and the backend calculation remains authoritative for order totals. Do not advertise a guaranteed delivery time or coverage until carrier costs and route eligibility are confirmed.
+
+The public tariff list is available at:
+
+`GET https://aveart-medusa-api.onrender.com/store/aveart-shipping/tariffs`
+
+For a store API request, include the Medusa publishable key header when required by the deployment.
 
 ## Render configuration
 
