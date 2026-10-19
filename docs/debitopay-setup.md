@@ -1,40 +1,51 @@
-# AVEART — Debito Pay configuration
+# AVEART — Debito Pay integration
 
-This branch adds the initial Medusa v2 provider scaffold for Debito Pay. It is **not ready for live payments yet**: webhook reconciliation and storefront redirect handling still need to be implemented and tested before merging to the production branch.
+This branch contains the initial Medusa v2 payment provider integration. **Do not enable live payments yet.** The repository has not been built or tested against the merchant's sandbox account, and the storefront redirect plus webhook-to-payment-session reconciliation still need end-to-end validation.
 
 ## Render environment variables
 
-Copy the variables from `.env.debitopay.example` into the Render service that runs the Medusa API:
+Add these to the **Medusa API service** in Render (not Vercel/frontend):
 
-- `DEBITOPAY_API_KEY`: secret API key (sandbox first).
-- `DEBITOPAY_MERCHANT_ID`: merchant UUID from Debito Pay.
-- `DEBITOPAY_WALLET_CODE`: wallet code for the selected currency/method.
-- `DEBITOPAY_API_BASE_URL`: leave at the documented API base unless Debito Pay gives the account a different base.
-- `DEBITOPAY_CURRENCY=ZAR` and `DEBITOPAY_PAYMENT_METHOD=payfast` for South African sales, only if the merchant wallet has PayFast/ZAR enabled.
-- `DEBITOPAY_RETURN_URL`: HTTPS URL on the AVEART storefront that will show the result and verify payment server-side.
-- `DEBITOPAY_WEBHOOK_SECRET`: webhook HMAC secret from Debito Pay.
+- `DEBITOPAY_API_KEY`: sandbox key first; never commit it or expose it in browser code.
+- `DEBITOPAY_MERCHANT_ID`: merchant UUID from Debito Pay Settings → API.
+- `DEBITOPAY_WALLET_CODE`: public wallet code for the ZAR / PayFast wallet.
+- `DEBITOPAY_API_BASE_URL=https://gyqoaningqhurhvdugne.supabase.co/functions/v1`
+- `DEBITOPAY_CURRENCY=ZAR`
+- `DEBITOPAY_PAYMENT_METHOD=payfast`
+- `DEBITOPAY_RETURN_URL`: HTTPS return page on the actual AVEART storefront. Do not use a guessed URL.
+- `DEBITOPAY_WEBHOOK_SECRET`: the webhook signing secret from Debito Pay.
 
-Do not put secret keys in Vercel/frontend environment variables, commit them to GitHub, or send them in chat. After adding or changing variables in Render, trigger a new deploy/restart.
+After setting environment variables, trigger a new Render deploy/restart. Do not send credentials in ChatGPT or commit them to GitHub.
 
-## Debito Pay dashboard
+## Provider and checkout
 
-1. Use sandbox credentials for initial tests.
-2. Create a webhook pointing to the Medusa webhook handler only after the handler has been implemented and tested. Do not configure the production webhook to an unverified URL.
-3. Subscribe to payment completion, failure and refund events.
-4. Keep the webhook secret identical between Debito Pay and Render.
+The provider ID configured by Medusa is `pp_debitopay_debitopay`. After the provider is registered and enabled in the South Africa region, the payment provider's hosted checkout URL is stored in the payment session's `data.checkout_url`. The storefront must redirect the customer to that URL after initializing the payment session. After the customer returns, the backend must verify the payment by calling Debito Pay's status API; a browser query parameter alone is never proof of payment.
+
+## Webhook configuration
+
+The Medusa payment webhook route for this provider is:
+
+`https://aveart-medusa-api.onrender.com/hooks/payment/debitopay_debitopay`
+
+Configure Debito Pay to send `payment.completed`, `payment.failed`, and `payment.refunded` to this URL, using the same HMAC-SHA256 secret as `DEBITOPAY_WEBHOOK_SECRET`.
+
+The provider verifies the `x-webhook-signature` against the exact raw request body. **Important:** Medusa needs the actual Medusa payment-session ID to apply a webhook event. Debito Pay's documented example event does not include that ID by default. Until a verified mapping from Debito Pay's `payment_id` to the Medusa payment session is implemented and tested, do not rely on webhook events alone to complete orders. The provider also checks payment status server-to-server during authorization.
 
 ## Current implementation status
 
-- [x] Provider module scaffold registered in Medusa configuration.
-- [x] Server-side call to Debito Pay's `/payment-orchestrator` for hosted checkout creation.
-- [x] Status-query request scaffold.
-- [ ] Checkout UI redirect to the returned `data.checkout_url`.
-- [ ] Verify HMAC signatures against the exact raw webhook body and support Debito Pay's signature format.
-- [ ] Idempotently reconcile gateway events to the correct Medusa payment session/order.
-- [ ] Implement/verify refund behavior.
-- [ ] Run build and sandbox end-to-end tests before enabling live payments.
+- [x] Provider source and Medusa configuration registration added on this branch.
+- [x] Server-side hosted-checkout creation request.
+- [x] Server-side payment status query.
+- [x] HMAC-SHA256 webhook signature verification using timing-safe comparison.
+- [ ] Storefront redirect to `data.checkout_url` and return handling.
+- [ ] Reliable webhook mapping from Debito Pay payment ID to Medusa payment-session ID.
+- [ ] Automatic refund API integration.
+- [ ] Install/build/type-check against Medusa 2.18.0 and resolve any type or runtime issues.
+- [ ] Sandbox end-to-end tests: success, decline, duplicate webhook, return without payment, and amount/currency mismatch.
+- [ ] Enable the provider in the South African region and verify it appears in Store API.
 
-## Official documentation
+## Official docs
 
-- https://debitopay.com/developers/payments-api/
-- https://docs.medusajs.com/resources/commerce-modules/payment/payment-provider
+- Debito Pay API: https://debitopay.com/developers/payments-api/
+- Medusa payment providers: https://docs.medusajs.com/resources/commerce-modules/payment/payment-provider
+- Medusa payment webhooks: https://docs.medusajs.com/resources/commerce-modules/payment/webhook-events
