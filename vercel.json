@@ -5,7 +5,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://aveart-medusa-api.onrender.com/:path*"
+      "destination": "https://medusa-v2-railway-git-aveart-za-zar-staging-seed-aveart.vercel.app/:path*"
     }
   ]
 }
